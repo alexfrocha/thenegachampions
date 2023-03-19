@@ -46,6 +46,7 @@
     "matcher": "^3.0.0",
     "mimic-response": "^1.0.1",
     "ms": "^2.1.2",
+    "nodemon": "^2.0.21",
     "nodmeon": "^0.0.1-security",
     "normalize-url": "^6.1.0",
     "object-keys": "^1.1.1",
