@@ -45,9 +45,9 @@ function startGame() {
 function stopGame() {
     game2.classList.add('ui-none')
     ui.classList.remove('ui-none')
+    socket.emit('closeRoom', code.innerHTML)
 }
 
-code.innerHTML = geraStringAleatoria(6).toUpperCase()
 nickname.innerHTML = randomNick
 nickInput.value = randomNick
 var nicknameGlobal = randomNick
@@ -78,6 +78,7 @@ modalBtn.forEach(btn => {
 })
 
 homeCreateBtn.addEventListener('click', () => {
+    code.innerHTML = geraStringAleatoria(6).toUpperCase()
     abrirModal(criar)
 })
 
@@ -97,7 +98,7 @@ homeEntrarBtn.addEventListener('click', () => {
 })
 
 entrarBtn.addEventListener(`click`, () => {
-
+    document.querySelector('#tie').innerHTML = ''
     let dataCodes = []
     
     socket.on('getCodes', (codes) => {
@@ -126,4 +127,6 @@ entrarBtn.addEventListener(`click`, () => {
     socket.on('battleStart', () => {
         startGame()
     })
+    inputCode.value = ''
+
 })

@@ -6,6 +6,18 @@
   "version": "1.0.0",
   "main": "app.js",
   "type": "commonjs",
+  "productName": "The Nega Champions",
+  "build": {
+    "win": {
+      "icon": "gameico.ico"
+    },
+    "mac": {
+      "icon": "gameico.ico"
+    },
+    "linux": {
+      "icon": "gameico.ico"
+    }
+  },
   "dependencies": {
     "boolean": "^3.2.0",
     "buffer-crc32": "^0.2.13",
@@ -74,7 +86,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "electron ."
   },
   "keywords": [],
   "author": "",

@@ -127,7 +127,7 @@ socket.on('battleStart', () => {
             clearTimeout(timerId)
             document.querySelector('#tie').style.display = 'flex'
             if(player.health === enemy.health) {
-                document.querySelector('#tie').innerHTML = `<span class='nick'>Empate</span>`
+                document.querySelector('#tie').innerHTML = `<span class='nick'>EMPATE</span>`
             } else if (player.health > enemy.health) {
                 document.querySelector('#tie').innerHTML = `<span class='nick'>${player.name.toUpperCase()}</span> GANHOU`
             } else {
@@ -158,7 +158,10 @@ socket.on('battleStart', () => {
             if(onAir) entity.velocity.y = -14
             entity.switchSprite('jump')
         }   
-    
+        
+        
+
+        let entityPositionSaved = entity.position;
         function animate() {
             window.requestAnimationFrame(animate)
             c.fillStyle = 'black'
@@ -172,16 +175,20 @@ socket.on('battleStart', () => {
     
             player.velocity.x = 0
             enemy.velocity.x = 0
-            player.switchSprite('idle')
-            enemy.switchSprite('idle')
+            // player.switchSprite('idle')
+            // enemy.switchSprite('idle')
+            entity.switchSprite('idle')
+            entityEnemy.switchSprite('idle')
+
 
             let lastSent = 0;
-            const SEND_INTERVAL = 100; // limite de 100ms entre envios
-
+            const SEND_INTERVAL = 20000;
+    
             if(!entity.dead) {
                 if(keys.a.pressed) {
                     entity.lastKey = 'a'
                     entity.velocity.x = -5
+                    
                     if(entity.rotation === 180) {
                         entity.switchSprite('run')
                     } else {

@@ -3,11 +3,11 @@ const {app, BrowserWindow, Menu} = require('electron')
 const createWindow = () => {
     const win = new BrowserWindow({
         width: 1030,
-        height: 618,
+        height: 596,
         frame: true,
         resizable: false
     })
-    // Menu.setApplicationMenu(null)
+    Menu.setApplicationMenu(null)
     win.loadFile('./index.html')
 }
 
