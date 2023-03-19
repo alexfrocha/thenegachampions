@@ -1,0 +1,172 @@
+.enter-ui {
+    position: relative;
+    background-image: url('../img/ui-background.png');
+    width: 1024px;
+    height: 576px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 3;
+    color: #fff;
+    display: flex;
+    align-items: end;
+}
+
+.black-opacity {
+    width: 1024px;
+    height: 576px;
+    background-color: black;
+    position: absolute;
+    opacity: .3;
+    z-index: -2;
+}
+
+.ui-container {
+    z-index: 5;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 70%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ui-user-group {
+    padding: 20px;
+}
+
+.ui-title {
+    text-shadow: 5px 0px 0px black;
+    font-size: 40px;
+}
+
+.ui-enter, .ui-create {
+    padding: 1rem 2rem;
+    width: 30%;
+    background: white;
+    border: none;
+    outline: none;
+    font-weight: bold;
+    color: black;
+}
+
+.ui-button {
+    padding: 1rem 2rem;
+    margin-top: 1rem;
+    background: white;
+    border: none;
+    outline: none;
+    font-weight: bold;
+    color: black;
+}
+
+.ui-user-edit {
+    padding: 10px;
+    background: white;
+    border: none;
+    outline: none;
+}
+
+.ui-enter:hover, .ui-create:hover, .ui-user-edit:hover, .ui-button:hover {
+    transition: .4s;
+    background: rgba(255,255,255,.3);
+    backdrop-filter: blur(5px);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0px 0px 5px rgba(0,0,0,.3);
+}
+
+.ui-enter {
+    margin-top: 1rem;
+}
+
+.ui-create {
+    margin-top: .4rem;
+}
+
+.ui-none {
+    display: none;
+}
+
+.ui-create-modal, .ui-enter-modal, .ui-edit-modal {
+    position: absolute;
+    background-color: rgba(60, 60, 60, .4);
+    backdrop-filter: blur(7px);
+    width: 54%;
+    height: 60%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 120;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(240,240,240,.1);
+    align-items: center;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.ui-label {
+    margin-bottom: .3rem;
+    text-transform: uppercase;
+    text-shadow: 5px 0px 0px black;
+}
+
+.ui-input {
+    font-size: 40px;
+    margin: 1rem 0;
+    width: 80%;
+    color: yellow;
+    padding: .5rem 0;
+    border: none;
+    border-bottom: 1px solid black;
+    background: none;
+    text-shadow: 5px 0px 0px black;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#edit-name {
+    background: none;
+    color: yellow;
+    text-transform: none;
+    text-shadow: 5px 0px 0px black;
+    text-shadow: none;
+}
+
+.ui-input:focus {
+    outline: none;
+}
+
+.ui-code {
+    text-align: center;
+    font-size: 40px;
+    margin: 2rem 0;
+    text-shadow: 5px 0px 0px black;
+    color: yellow;
+}
+
+.ui-user {
+    color: yellow;
+    text-shadow: 5px 0px 0px black;
+}
+
+#nova-sala {
+    text-align: center;
+    text-shadow: 5px 0px 0px black;
+}
+
+.ui-description {
+    font-size: 14px;
+    text-align: center;
+    width: 80%;
+    line-height: 20px;
+    text-shadow: 5px 0px 0px black;
+}
