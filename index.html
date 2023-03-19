@@ -22,7 +22,11 @@
             box-sizing: border-box;
         }
         p {
-            text-shadow: 0px 0px 5px black;
+            text-shadow: 3px 0px 0px black;
+        }
+        .nick {
+            color: yellow;
+            margin-right: 1rem;
         }
     </style>
 </head>
@@ -31,7 +35,7 @@
         
         <div class="black-opacity"></div>
         <div class="ui-container">
-            <h2 class="ui-title">THE NEGA CHIN</h2>
+            <h2 class="ui-title">THE NEGA CHAMPIONS</h2>
             <button class="ui-enter">Entrar</button>
             <button class="ui-create">Criar</button>
         </div>
@@ -44,7 +48,8 @@
             <div class="ui-enter-modal">
                 <div class="modal-content">
                     <label class="ui-label" for="">Código da Sala</label>
-                    <input type="text" class="ui-input" name="" id="">
+                    <span id="error-code" class="span"></span>
+                    <input type="text" class="ui-input" name="" id="input-code">
                     <button id="entrar-btn" class="ui-button" type="submit">Entrar</button>
                 </div>
             </div>
@@ -120,7 +125,6 @@
               border: 4px solid white;
             "
           >
-            10
           </div>
 
             <div
@@ -164,18 +168,15 @@
         <canvas class="ui-none"></canvas>
     </div>
 
-    <script src="js/ui.js"></script>
-    <script src="js/classes.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/characters.js"></script>
-    <script src="js/builds.js"></script>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
-        let codigos = {}
         var socket = io('http://localhost:3001/')
-        socket.on('obterJogadores', (jogadores) => {
-            console.log(jogadores)
-        })
     </script>
+    <script src="js/classes.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/builds.js"></script>
+    <script src="js/sprites.js"></script>
 </body>
 </html>

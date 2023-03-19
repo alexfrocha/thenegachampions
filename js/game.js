@@ -1,7 +1,4 @@
 const canvas = document.querySelector('canvas')
-var socket = io('http://localhost:3001/')
-console.log(socket)
-const nickUsuario = document.querySelector('.ui-user')
 const c = canvas.getContext('2d')
 canvas.width = 1024
 canvas.height = 576
@@ -9,296 +6,354 @@ canvas.height = 576
 c.fillRect(0, 0, canvas.width, canvas.height)
 const gravity = 0.7
 
-const player = new Fighter({
-    position: {
-        x: -40,
-        y: 0
-    },
-    velocity: {
-        x: 0,
-        y: 0
-    },
-    offset: {
-        x: 0,
-        y: 70
-    },
-    imageSrc: './img/peasant/Idle.png',
-    scale: 1.7,
-    framesMax: 6,
-    name: nicknameGlobal,
-    sprites: {
-        idle: {
-            imageSrc: './img/peasant/Idle.png',
-            framesMax: 6
-        },
-        run: {
-            imageSrc: './img/peasant/Run.png',
-            framesMax: 6
-        },
-        jump: {
-            imageSrc: './img/peasant/Jump.png',
-            framesMax: 8
-        },
-        attack: {
-            imageSrc: './img/peasant/Attack_2.png',
-            framesMax: 4
-        },
-        secondAttack: {
-            imageSrc: './img/peasant/Attack_2.png',
-            framesMax: 4
-        },
-        hurt: {
-            imageSrc: './img/peasant/Hurt.png',
-            framesMax: 2
-        },
-        death: {
-            imageSrc: './img/peasant/Dead.png',
-            framesMax: 4
-        },
-        walk: {
-            imageSrc: './img/peasant/Walk.png',
-            framesMax: 8
+let player1, player2
+
+socket.on('battleStart', () => {
+    console.log('batalha inicou no game.js')
+    console.log(socket.id)
+    let oponentes;
+    let personagens;
+    let player, enemy
+
+    socket.on('oponentes', (data) => {
+        oponentes = data
+        let entity;
+
+        player = new Fighter({
+            position: {
+                x: oponentes[0].position.x,
+                y: oponentes[0].position.y
+            },
+            velocity: {
+                x: 0,
+                y: 0
+            },
+            offset: {
+                x: 0,
+                y: 70
+            },
+            animation: oponentes[0].animation,
+            scale: 1.7,
+            name: oponentes[0].nick,
+            sprites: sprites('peasant'),
+            _id: oponentes[0]._id,
+            code: oponentes[0].code
+        })
+
+        enemy = new Fighter({
+            position: {
+                x: oponentes[1].position.x ? oponentes[1].position.x : canvas.width,
+                y: oponentes[1].position.y
+            },
+            velocity: {
+                x: 0,
+                y: 0
+            },
+            offset: {
+                x: -80,
+                y: 50
+            },
+            scale: 1.7,
+            rotation: 180,
+            animation: oponentes[1].animation,
+            name: oponentes[1].nick,
+            sprites: sprites('samurai'),
+            _id: oponentes[1]._id,
+            code: oponentes[1].code
+        })
+
+        personagens = {
+            player: player,
+            enemy: enemy
         }
-    }
-})
 
-const enemy = new Fighter({
-    position: {
-        x: canvas.width,
-        y: 0
-    },
-    velocity: {
-        x: 0,
-        y: 0
-    },
-    offset: {
-        x: -80,
-        y: 50
-    },
-    color: 'blue',
-    imageSrc: './img/samurai/Idle.png',
-    scale: 1.7,
-    framesMax: 5,
-    rotation: 180,
-    sprites: {
-        idle: {
-            imageSrc: './img/samurai/Idle.png',
-            framesMax: 5
-        },
-        run: {
-            imageSrc: './img/samurai/Run.png',
-            framesMax: 8
-        },
-        jump: {
-            imageSrc: './img/samurai/Jump.png',
-            framesMax: 7
-        },
-        attack: {
-            imageSrc: './img/samurai/Attack_1.png',
-            framesMax: 4
-        },
-        secondAttack: {
-            imageSrc: './img/samurai/Attack_2.png',
-            framesMax: 5
-        },
-        hurt: {
-            imageSrc: './img/samurai/Hurt.png',
-            framesMax: 2
-        },
-        death: {
-            imageSrc: './img/samurai/Dead.png',
-            framesMax: 6
-        },
-        walk: {
-            imageSrc: './img/samurai/Walk.png',
-            framesMax: 9
-        }
-    }
-})
-
-const keys = {
-    a: {
-        pressed: false
-    },
-    d: {
-        pressed: false
-    },
-    w: {
-        pressed: false
-    },
-
-    ArrowRight: {
-        pressed: false
-    },
-    ArrowLeft: {
-        pressed: false
-    },
-    ArrowUp: {
-        pressed: false
-    },
-
-    attack: {
-        pressed: false
-    }
-}
-
-decreaseTimer()
-
-function jump(entity) {
-    const onAir = entity.position.y + entity.height + entity.velocity.y >= canvas.height - 100
-    if(onAir) entity.velocity.y = -14
-    entity.switchSprite('jump')
-}   
-
-function animate() {
-    window.requestAnimationFrame(animate)
-    c.fillStyle = 'black'
-    c.fillRect(0, 0, canvas.width, canvas.height)
-    background.update()
-    shop.update()
-    player.update()
-    enemy.update()
+        const keys = {
+            a: {
+                pressed: false
+            },
+            d: {
+                pressed: false
+            },
+            w: {
+                pressed: false
+            },
     
-    // MOVIMENTAÇÃO DO JOGADOR
-
-    player.velocity.x = 0
-    enemy.velocity.x = 0
-    player.switchSprite('idle')
-    enemy.switchSprite('idle')
-
-    if(!player.dead) {
-
-        if(keys.a.pressed) {
-            player.velocity.x = -5
-            player.switchSprite('walk')
+            ArrowRight: {
+                pressed: false
+            },
+            ArrowLeft: {
+                pressed: false
+            },
+            ArrowUp: {
+                pressed: false
+            },
+    
+            attack: {
+                pressed: false
+            }
         }
-        if(keys.d.pressed) {
-            player.velocity.x = 5
-            player.switchSprite('run')
+
+        let entityEnemy;
+        let enemyObject;
+        if(oponentes[0]._id === socket.id) {
+            entity = player
+            entityEnemy = enemy
+            oponentes[0].sprite = 'player'
+            enemyObject = oponentes[1]
+        }
+        if(oponentes[1]._id === socket.id) {
+            entity = enemy
+            entityEnemy = player
+            oponentes[1].sprite = 'enemy'
+            enemyObject = oponentes[0]
+        }
+
+    
+        // ################################################################################################## UTILS
+            
+        function rectangularCollision({ rectangle1, rectangle2 }) {
+            return (
+              rectangle1.attackBox.position.x + rectangle1.attackBox.width >=
+                rectangle2.position.x &&
+              rectangle1.attackBox.position.x <=
+                rectangle2.position.x + rectangle2.width &&
+              rectangle1.attackBox.position.y + rectangle1.attackBox.height >=
+                rectangle2.position.y &&
+              rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height
+            )
+          }
+          
+        function determineWinner({ player, enemy, timerId }) {
+            clearTimeout(timerId)
+            document.querySelector('#tie').style.display = 'flex'
+            if(player.health === enemy.health) {
+                document.querySelector('#tie').innerHTML = `<span class='nick'>Empate</span>`
+            } else if (player.health > enemy.health) {
+                document.querySelector('#tie').innerHTML = `<span class='nick'>${player.name.toUpperCase()}</span> GANHOU`
+            } else {
+                document.querySelector('#tie').innerHTML = `<span class='nick'>${enemy.name.toUpperCase()}</span> GANHOU`
+            }
+            setTimeout(stopGame, 5000)
         }
         
-        if(keys.w.pressed) jump(player)
-    }
-
-
-    // MOVIMENTAÇÃO DO INIMIGO
-    if(!enemy.dead) {
-        if(keys.ArrowLeft.pressed) {
-            enemy.velocity.x = -5
-            enemy.switchSprite('run')
+        let timer = 60
+        let timerId
+        function decreaseTimer() {
+            if (timer > 0) {
+                timerId = setTimeout(decreaseTimer, 1000);
+                timer--
+                document.querySelector('#timer').innerHTML = timer
+            }
+            if(timer === 0) {
+                determineWinner({ player, enemy, timerId })
+            }
         }
-        if(keys.ArrowRight.pressed) {
-            enemy.velocity.x = 5
-            enemy.switchSprite('walk')
-        }
-        if(keys.ArrowUp.pressed) jump(enemy)
-    }
+    
+        // ################################################################################################## UTILS
+    
+        decreaseTimer()
+    
+        function jump(entity) {
+            const onAir = entity.position.y + entity.height + entity.velocity.y >= canvas.height - 100
+            if(onAir) entity.velocity.y = -14
+            entity.switchSprite('jump')
+        }   
+    
+        function animate() {
+            window.requestAnimationFrame(animate)
+            c.fillStyle = 'black'
+            c.fillRect(0, 0, canvas.width, canvas.height)
+            background.update()
+            shop.update()
+            player.update()
+            enemy.update()
+            
+            // MOVIMENTAÇÃO DO JOGADOR
+    
+            player.velocity.x = 0
+            enemy.velocity.x = 0
+            player.switchSprite('idle')
+            enemy.switchSprite('idle')
 
-    // COLISÃO
-    if( 
-        rectangularCollision({
-            rectangle1: player,
-            rectangle2: enemy
-        }) 
-        &&
-        player.isAttacking
-    ) {
-        player.isAttacking = false
-        enemy.takeHit()
-        document.querySelector('#enemy-health').style.width = enemy.health + '%'
-        console.log('Você atacou')
-    }
+            let lastSent = 0;
+            const SEND_INTERVAL = 100; // limite de 100ms entre envios
 
-    if( 
-        rectangularCollision({
-            rectangle1: enemy,
-            rectangle2: player
-        }) 
-        &&
-        enemy.isAttacking
-    ) {
-        enemy.isAttacking = false
-        player.takeHit()
-        document.querySelector('#player-health').style.width = player.health + '%'
-        console.log('Inimigo te atacou')
-    }
+            if(!entity.dead) {
+                if(keys.a.pressed) {
+                    entity.lastKey = 'a'
+                    entity.velocity.x = -5
+                    if(entity.rotation === 180) {
+                        entity.switchSprite('run')
+                    } else {
+                        entity.switchSprite('walk')
+                    }
+                    const now = Date.now();
+                    if (now - lastSent >= SEND_INTERVAL) {
+                        socket.emit('playerMoved', {entity: entity, lastKey: 'a'});
+                        lastSent = now;
+                    } else {
+                        setTimeout(() => {
+                        socket.emit('playerMoved', {entity: entity, lastKey: 'a'});
+                        lastSent = Date.now();
+                        }, SEND_INTERVAL - (now - lastSent));
+                    }
+                }
 
+                if(keys.d.pressed) {
+                    entity.lastKey = 'd'
+                    entity.velocity.x = 5
+                    if(entity.rotation === 180) {
+                        entity.switchSprite('walk')
+                    } else {
+                        entity.switchSprite('run')
+                    }
+                    const now = Date.now();
+                    if (now - lastSent >= SEND_INTERVAL) {
+                        socket.emit('playerMoved', {entity: entity, lastKey: 'd'});
+                        lastSent = now;
+                    } else {
+                        setTimeout(() => {
+                        socket.emit('playerMoved', {entity: entity, lastKey: 'd'});
+                        lastSent = Date.now();
+                        }, SEND_INTERVAL - (now - lastSent));
+                    }
+                }
+                
+                if(keys.w.pressed) {
+                    entity.lastKey = 'w'
+                    jump(entity)
+                    const now = Date.now();
+                    if (now - lastSent >= SEND_INTERVAL) {
+                        socket.emit('playerMoved', {entity: entity, lastKey: 'w'});
+                        lastSent = now;
+                    } else {
+                        setTimeout(() => {
+                        socket.emit('playerMoved', {entity: entity, lastKey: 'w'});
+                        lastSent = Date.now();
+                        }, SEND_INTERVAL - (now - lastSent));
+                    }
+                }
+            }
 
-    if(enemy.health <= 0 || player.health <= 0) {
-        determineWinner({ player, enemy, timerId })
-    }
+            
+            socket.on('oponentePosition', (data) => {
+                entityEnemy.position = data.position
+            })
 
-}
+            socket.on('keyPressed', (key) => {
+                switch(key) {
+                    case 'a':
+                        if(entity.lastKey === 'a') break;
+                        if(entityEnemy.rotation === 180) {
+                            entityEnemy.switchSprite('run')
+                        } else {
+                            entityEnemy.switchSprite('walk')
+                        }
+                        break;
+                    case 'd':
+                        if(entity.lastKey === 'd') break;
+                        if(entityEnemy.rotation === 180) {
+                            entityEnemy.switchSprite('walk')
+                        } else {
+                            entityEnemy.switchSprite('run')
+                        }
+                        break;
+                    case 'w':
+                        if(entity.lastKey === 'w') break;
+                        jump(entityEnemy)
+                        break;
+                    case 'click':
+                        entityEnemy.attack()
+                        break;
+                }
+            })
 
-animate()
-window.addEventListener('keydown', (event) => {
-    switch(event.key) {
-        case 'd':
-            keys.d.pressed = true
-            break;
-        case 'a':
-            keys.a.pressed = true
-            break;
-        case 'w':
-            keys.w.pressed = true
-            break;
-        // case ' ':
-        //     player.attack()
-        //     break;
+    
+            // COLISÃO
+            if( 
+                rectangularCollision({
+                    rectangle1: player,
+                    rectangle2: enemy
+                }) 
+                &&
+                player.isAttacking
+            ) {
+                player.isAttacking = false
+                enemy.takeHit()
+                document.querySelector('#enemy-health').style.width = enemy.health + '%'
+                console.log('Você atacou')
+            }
+    
+            if( 
+                rectangularCollision({
+                    rectangle1: enemy,
+                    rectangle2: player
+                }) 
+                &&
+                enemy.isAttacking
+            ) {
+                enemy.isAttacking = false
+                player.takeHit()
+                document.querySelector('#player-health').style.width = player.health + '%'
+                console.log('Inimigo te atacou')
+            }
+    
+    
+            if(enemy.health <= 0 || player.health <= 0) {
+                determineWinner({ player, enemy, timerId })
+            }
+    
+            }
+    
+            animate()
+            window.addEventListener('keydown', (event) => {
+                switch(event.key) {
+                    case 'd':
+                        keys.d.pressed = true
+                        break;
+                    case 'a':
+                        keys.a.pressed = true
+                        break;
+                    case 'w':
+                        keys.w.pressed = true
+                        break;
+                    // case ' ':
+                    //     player.attack()
+                    //     break;
+                }
+            })
+    
+            window.addEventListener('keyup', (event) => {
+                lastKey = event.key
+                switch(event.key) {
+                    case 'd':
+                        keys.d.pressed = false
+                        break;
+                    case 'a':
+                        keys.a.pressed = false
+                        break;
+                    case 'w':
+                        setTimeout(() => {
+                            keys.w.pressed = false
+                        }, 400)
+                        break;
+                }
+            })
+    
+            window.addEventListener('click', () => {
+                if(!entity.dead) {
+                    socket.emit('playerMoved', {entity: entity, lastKey: 'click'});
+                    entity.attack()
+                }
+            })
 
+            socket.on('exited', (player) => {
+                console.log('Jogador que desconectou: ' + player.nick)
+                stopGame()
+            })
+    
+    })
 
-        case 'ArrowRight':
-            keys.ArrowRight.pressed = true
-            break;
-        case 'ArrowLeft':
-            keys.ArrowLeft.pressed = true
-            break;
-        case 'ArrowUp':
-            keys.ArrowUp.pressed = true
-            break;
-        case 'ArrowDown':
-            enemy.attack()
-            break
-    }
-})
+    
 
-window.addEventListener('keyup', (event) => {
-    lastKey = event.key
-    switch(event.key) {
-        case 'd':
-            keys.d.pressed = false
-            player.lastKey = event.key
-            break;
-        case 'a':
-            keys.a.pressed = false
-            player.lastKey = event.key
-            break;
-        case 'w':
-            setTimeout(() => {
-                keys.w.pressed = false
-            }, 400)
-            player.lastKey = event.key
-            break;
-
-
-        case 'ArrowRight':
-            keys.ArrowRight.pressed = false
-            enemy.lastKey = event.key
-            break;
-        case 'ArrowLeft':
-            keys.ArrowLeft.pressed = false
-            enemy.lastKey = event.key
-            break;
-        case 'ArrowUp':
-            keys.ArrowUp.pressed = false
-            enemy.lastKey = event.key
-            break;
-        case 'ArrowDown':
-            enemy.isAttacking = false
-            break
-    }
-})
-
-window.addEventListener('click', () => {
-    if(!player.dead) player.attack()
 })

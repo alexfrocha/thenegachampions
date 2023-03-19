@@ -16,7 +16,7 @@
     height: 576px;
     background-color: black;
     position: absolute;
-    opacity: .3;
+    opacity: .6;
     z-index: -2;
 }
 
@@ -40,6 +40,8 @@
 .ui-title {
     text-shadow: 5px 0px 0px black;
     font-size: 40px;
+    line-height: 50px;
+    color: yellow;
 }
 
 .ui-enter, .ui-create {
@@ -161,6 +163,12 @@
 #nova-sala {
     text-align: center;
     text-shadow: 5px 0px 0px black;
+}
+
+#error-code {
+    color: red;
+    text-shadow: 5px 0px 0px black;
+    font-size: 20px;
 }
 
 .ui-description {

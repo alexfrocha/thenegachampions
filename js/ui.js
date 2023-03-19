@@ -8,6 +8,9 @@ const homeEntrarBtn = document.querySelector('.ui-enter')
 const homeEditarBtn = document.querySelector('.ui-user-edit')
 const homeCreateBtn = document.querySelector('.ui-create')
 const modalBtn = document.querySelectorAll('.ui-button')
+const inputCode = document.querySelector('#input-code')
+const errorCode = document.querySelector('#error-code')
+
 
 const code = document.querySelector('.ui-code')
 
@@ -18,6 +21,10 @@ const createBtn = document.querySelector('#criar-btn')
 const nickInput = document.querySelector('#edit-name')
 
 const nickname = document.querySelector('.ui-user')
+
+
+
+var room;
 
 function geraStringAleatoria(tamanho) {
     var stringAleatoria = '';
@@ -34,9 +41,10 @@ let randomNick = geraStringAleatoria(8)
 function startGame() {
     game2.classList.remove('ui-none')
     ui.classList.add('ui-none')
-    var script = document.createElement('script')
-    script.src = './js/game.js'
-    document.body.appendChild(script)
+}
+function stopGame() {
+    game2.classList.add('ui-none')
+    ui.classList.remove('ui-none')
 }
 
 code.innerHTML = geraStringAleatoria(6).toUpperCase()
@@ -51,6 +59,12 @@ function abrirModal(element) {
 function fecharModal(element) {
     element.classList.add('ui-none')
 }
+
+// function showError(message) {
+//     errorCode.innerHTML = message
+//     errorCode.classList.remove('ui-none')
+// }
+
 
 modalBtn.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -83,5 +97,33 @@ homeEntrarBtn.addEventListener('click', () => {
 })
 
 entrarBtn.addEventListener(`click`, () => {
-    startGame()
+
+    let dataCodes = []
+    
+    socket.on('getCodes', (codes) => {
+        dataCodes = codes
+    })
+
+    if(!inputCode.value) {
+        errorCode.innerHTML = 'Insire um código válido'
+        return
+    }
+
+    // if(!dataCodes.includes(inputCode.value)) {
+    //     errorCode.innerHTML = 'Sala inexistente'
+    //     return
+    // }
+
+    socket.emit('join', {
+        roomName: inputCode.value,
+        playerNick: nicknameGlobal
+    })
+    
+    socket.on('joined', (room) => {
+        console.log(`Acaba de entrar 1 jogador na sala ${room}`)
+    })
+
+    socket.on('battleStart', () => {
+        startGame()
+    })
 })

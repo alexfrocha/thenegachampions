@@ -59,7 +59,7 @@ class Sprite {
 }
 
 class Fighter extends Sprite {
-    constructor({position, name = 'random', direction = 'left', velocity, color = 'red', offset = {x: 0, y: 0}, scale = 1, framesMax = 1, imageSrc, sprites, rotation}) {
+    constructor({position, name = 'random', _id, code, animation, direction = 'left', velocity, color = 'red', offset = {x: 0, y: 0}, scale = 1, framesMax = 1, imageSrc, sprites, rotation}) {
         super({
             position,
             imageSrc,
@@ -71,6 +71,8 @@ class Fighter extends Sprite {
         this.direction = direction
         this.height = 150
         this.width = 50
+        this._id = _id
+        this.code = code
         this.name = name
         this.attacked = false
         this.attackBox = {  
@@ -87,6 +89,7 @@ class Fighter extends Sprite {
         this.rotation = rotation
         this.cooldown = false
         this.health = 100
+        this.animation = animation
         this.framesCurrent = 0
         this.framesElapsed = 0
         this.framesHold = 5
@@ -98,12 +101,11 @@ class Fighter extends Sprite {
             sprites[sprite].image.src = sprites[sprite].imageSrc
         }
 
-
     }
 
     update() {
-        this.showName()
         this.draw()
+        this.showName()
         if(!this.dead) this.animateFrame()
         
         this.position.y += this.velocity.y
@@ -163,8 +165,10 @@ class Fighter extends Sprite {
             this.cooldown = true
             setTimeout(() => {
                 this.isAttacking = false
+            }, 50)
+            setTimeout(() => {
                 this.cooldown = false
-            }, 1000)
+            }, 1000);
         }   
     }
 
