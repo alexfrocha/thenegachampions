@@ -46,6 +46,7 @@
     "matcher": "^3.0.0",
     "mimic-response": "^1.0.1",
     "ms": "^2.1.2",
+    "nodmeon": "^0.0.1-security",
     "normalize-url": "^6.1.0",
     "object-keys": "^1.1.1",
     "once": "^1.4.0",
@@ -72,7 +73,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
